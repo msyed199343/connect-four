@@ -54,6 +54,7 @@ class ConnectFour {
   }
 
   static checkVertical = (grid) =>{
+
     let winner
     let col = []
 
@@ -62,13 +63,14 @@ class ConnectFour {
                   col.length < 6 ? col.push(grid[j][i]) : ""
             }
 
+
               //need to check 6 vertical so checking two at a time with recursion to remove repetitive code
 
               let firstTwoValuesOfCol = col.splice(0, 2)
                 checkCol(firstTwoValuesOfCol)
 
                 function checkCol(firstTwo){
-                      if (col.length === 0){
+                      if (col.length < 1){
                         return
                       }
                       else if(firstTwo[0] === firstTwo[1] && firstTwo[1] === col[0] && col[0] === col[1] && col[0] !== ' '){
@@ -78,25 +80,51 @@ class ConnectFour {
                         firstTwoValuesOfCol = col.splice(0, 2)
                         checkCol(firstTwoValuesOfCol)
                       }
+
+                      //console.log(winner)
                 }
 
       })
-
+      console.log(winner)
    return winner === 'X' ? 'X'
     : winner === 'O' ? 'O'
-    : "T"
+    : 'T'
    }
 
 
   static checkHorizontal(grid){
     let winner
     let row
-    grid.forEach( i => i.every( i2 => i2 === 'X') ? winner = 'X' : '' )
-    grid.forEach (i => i.every( i2 => i2 === 'O') ? winner = 'O' : '')
+
+    grid.forEach((i) => {
+      row = i
+      let firstTwoValuesOfRow = row.splice(0, 2)
+
+      checkRow(firstTwoValuesOfRow)
+
+      function checkRow(firstTwo){
+
+            if (row.length === 0){
+              return
+            }
+            else if(firstTwo[0] === firstTwo[1] && firstTwo[1] === row[0] && row[0] === row[1] && row[0] !== ' '){
+              winner = row[0]
+            }
+            else{
+              firstTwoValuesOfRow[0] = row.shift()
+              checkRow(firstTwoValuesOfRow)
+            }
 
 
- return winner == 'X'? 'X'
-   : winner == 'O'? 'O'
+
+      }
+
+    })
+
+
+
+ return winner === 'X'? 'X'
+   : winner === 'O'? 'O'
    : "T"
 
   }
@@ -110,17 +138,17 @@ class ConnectFour {
 
       let horizontalWinner = this.checkHorizontal(grid)
       let verticalWinner = this.checkVertical(grid)
-      let diagWinner = this.checkDiag(grid)
+      let diagWinner  = this.checkDiag(grid)
       let finishCheck = this.noWinCheck(grid)
 
-      //console.log(verticalWinner)
+
 
       return horizontalWinner !== "T" ? horizontalWinner
-      : verticalWinner !== "T" ? verticalWinner
-      : diagWinner !== "T" ? diagWinner
-      : this.emptyGridCheck === true ? false
-      : (horizontalWinner && verticalWinner && diagWinner) === "T" && finishCheck !== true ? "T"
-      : false
+      : verticalWinner !== "T" ? verticalWinner : false
+      // : diagWinner !== "T" ? diagWinner
+      // : this.emptyGridCheck === true ? false
+      // : (horizontalWinner && verticalWinner && diagWinner) === "T" && finishCheck !== true ? "T"
+      // : false
 
 
 
