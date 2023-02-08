@@ -20,12 +20,50 @@ class ConnectFour {
     Screen.initialize(6, 7);
     Screen.setGridlines(true);
 
-    // Replace this with real commands
-    Screen.addCommand('t', 'test command (remove)', ConnectFour.testCommand);
+    Screen.addCommand('w', 'Up', this.cursor.up.bind(this));
+    Screen.addCommand('s', 'Down', this.cursor.down.bind(this));
+    Screen.addCommand('a', 'left', this.cursor.left.bind(this));
+    Screen.addCommand('d', 'Right', this.cursor.right.bind(this));
+    Screen.addCommand('return', 'Place a move', ConnectFour.placeMove.bind(this));
 
     this.cursor.setBackgroundColor();
+    ConnectFour.turnMessage.call(this);
+    Screen.printCommands();
+
+  }
+
+  static turnMessage() {
+    Screen.setMessage(`It is ${this.playerTurn}'s turn`)
     Screen.render();
   }
+
+  static placeMove() {
+    let row = this.cursor.row;
+    let col = this.cursor.col;
+
+    if (Screen.grid[row][col] === ' '){
+      Screen.setGrid(row, col, this.playerTurn);
+
+      let winner = ConnectFour.checkWin(Screen.grid);
+
+      if (winner) {
+        ConnectFour.endGame(winner);
+      }
+
+      if (this.playerTurn === 'O') {
+        this.playerTurn = 'X'
+      } else this.playerTurn = 'O';
+
+      ConnectFour.turnMessage.call(this);
+      Screen.printCommands();
+
+  } else {
+      Screen.setMessage(`Spot already taken`);
+      Screen.render();
+      Screen.printCommands();
+    }
+  }
+
 
   static noWinCheck = grid => {
     // should return true if even one element in 2d array is empty (' ')
@@ -211,15 +249,6 @@ let currentFour
      else{
       return false
      }
-      // return horizontalWinner !== "T" ? horizontalWinner
-      // : verticalWinner !== "T" ? verticalWinner : false
-      // : diagWinner !== "T" ? diagWinner
-      // : this.emptyGridCheck === true ? false
-      // : (horizontalWinner && verticalWinner && diagWinner) === "T" && finishCheck !== true ? "T"
-      // : false
-
-
-
   }
 
   static endGame(winner) {
