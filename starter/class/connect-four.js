@@ -38,15 +38,62 @@ class ConnectFour {
       return emptySpacesLeft
    }
 
-  static checkDiag = (grid) => {
-    this.emptyGridCheck === true ?  false : ""
+
+   static checkDiagUp = (grid) => {
+
+    let diagArray = [
+      [grid[0][6], grid[1][5], grid[2][4], grid[3][3]],
+      [grid[2][4], grid[3][3], grid[4][3], grid[5][2]],
+      [grid[1][6], grid[2][5], grid[3][4], grid[4][3]],
+      [grid[2][5], grid[3][4], grid[4][3], grid[5][2]],
+      [grid[2][6], grid[3][5], grid[4][4], grid[5][3]],
+      [grid[0][5], grid[1][4], grid[2][3], grid[3][2]],
+      [grid[2][3], grid[3][2], grid[4][1], grid[5][0]],
+      [grid[0][4], grid[1][3], grid[2][2], grid[3][1]],
+      [grid[1][3], grid[2][2], grid[3][1], grid[4][0]],
+      [grid[0][3], grid[1][2], grid[2][1], grid[3][0]]
+    ]
+
+let winner
+let currentFour
+
+  for(let i = 0; i < diagArray.length; i++){
+      currentFour = diagArray[i]
+
+      currentFour.every(j => j === currentFour[0] &&  j !== ' ')  ? winner = currentFour[0] : ""
+  }
+
+
+  console.log(winner)
+
+    return winner == 'X'? 'X'
+      : winner == 'O'? 'O'
+      : "T"
+}
+
+  static checkDiagDown = (grid) => {
+
+        let diagArray = [
+          [grid[0][0], grid[1][1], grid[2][2], grid[3][3]],
+          [grid[2][2], grid[3][3], grid[4][4], grid[5][5]],
+          [grid[2][0], grid[3][1], grid[4][2], grid[5][3]],
+          [grid[0][1], grid[1][2], grid[2][3], grid[3][4]],
+          [grid[0][2], grid[1][3], grid[2][4], grid[3][5]],
+          [grid[1][3], grid[2][4], grid[3][5], grid[4][6]],
+          [grid[0][3], grid[1][4], grid[2][5], grid[3][6]]
+        ]
 
     let winner
-    let diagOne = [grid[0][0], grid[1][1], grid[2][2]]
-    let diagTwo = [grid[0][2], grid[1][1], grid[2][0]]
+    let currentFour
 
-    diagOne.every(i => i === diagOne[0])  ? winner = diagOne[0]
-    : diagTwo.every(i => i === diagTwo[0]) ? winner = diagTwo[0]:""
+      for(let i = 0; i < diagArray.length; i++){
+          currentFour = diagArray[i]
+
+          currentFour.every(j => j === currentFour[0] &&  j !== ' ')  ? winner = currentFour[0] : ""
+      }
+
+
+
 
         return winner == 'X'? 'X'
           : winner == 'O'? 'O'
@@ -85,7 +132,7 @@ class ConnectFour {
                 }
 
       })
-      console.log(winner)
+
    return winner === 'X' ? 'X'
     : winner === 'O' ? 'O'
     : 'T'
@@ -97,7 +144,8 @@ class ConnectFour {
     let row
 
     grid.forEach((i) => {
-      row = i
+      row = i.slice()
+
       let firstTwoValuesOfRow = row.splice(0, 2)
 
       checkRow(firstTwoValuesOfRow)
@@ -136,15 +184,35 @@ class ConnectFour {
     // Return 'T' if the game is a tie
     // Return false if the game has not ended
 
-      let horizontalWinner = this.checkHorizontal(grid)
+
       let verticalWinner = this.checkVertical(grid)
-      let diagWinner  = this.checkDiag(grid)
+      let horizontalWinner = this.checkHorizontal(grid)
+      let diagDownWinner  = this.checkDiagDown(grid)
+      let diaUpWinner = this.checkDiagUp(grid)
       let finishCheck = this.noWinCheck(grid)
 
 
 
-      return horizontalWinner !== "T" ? horizontalWinner
-      : verticalWinner !== "T" ? verticalWinner : false
+     if (verticalWinner !== "T") {
+      return verticalWinner
+     }
+     else if(horizontalWinner !== "T"){
+      return horizontalWinner
+     }
+     else if(diagDownWinner !== "T"){
+      return diagDownWinner
+     }
+     else if(diaUpWinner !== "T"){
+      return diaUpWinner
+     }
+     else if((verticalWinner && horizontalWinner && diaUpWinner && diagDownWinner) === "T" && finishCheck !== true){
+      return "T"
+     }
+     else{
+      return false
+     }
+      // return horizontalWinner !== "T" ? horizontalWinner
+      // : verticalWinner !== "T" ? verticalWinner : false
       // : diagWinner !== "T" ? diagWinner
       // : this.emptyGridCheck === true ? false
       // : (horizontalWinner && verticalWinner && diagWinner) === "T" && finishCheck !== true ? "T"
